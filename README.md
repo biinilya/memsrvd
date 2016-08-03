@@ -1,9 +1,26 @@
 # memsrvd
 
-## https://github.com/bsm/redeo ##
+## Assumptions
+* We are to create custom in-memory cache, so:
+  1. We have some very special requirements
+  2. Performance is important
+  3. No general solution is possible
+* We are to have telnet-like or HTTP-based protocol, so:
+  1. It is not wise to reimplement the wheel, common is better then special
+  2. Performance matters, otherwise we don't need a custom solution
+* I need to write some code here, it would be a bad test case otherwise
+  
+## Solutions
+* We don't need to actually implement anything without sample use-cases, so just create a mock storage
+* Redis protocol is simple, with good performance and telnet-like at the same time. So fits perfectly.
+* Golang API client is any redis client
+* Make commands compatible with Redis
+* If we need persistence, scaling, auth, we should consider of using [ledigo](https://github.com/siddontang/ledisdb) with custom storage plugin
 
+## Third-parties
+
+### [Redeo](https://github.com/bsm/redeo)
 High-performance framework for building redis-protocol compatible TCP servers/services
-
 ```
 go test github.com/bsm/redeo -bench=. -benchmem
 Running Suite: redeo

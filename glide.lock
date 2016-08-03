@@ -1,0 +1,6 @@
+hash: c5747c699785b03e2e08481bb75c84c362e13c230ac21081d51ab28d5aa54993
+updated: 2016-08-03T09:08:33.962987649+03:00
+imports:
+- name: github.com/bsm/redeo
+  version: d0b3493b31ef91eee158521c808226fc648ecca3
+testImports: []

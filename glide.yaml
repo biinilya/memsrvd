@@ -1,0 +1,3 @@
+package: github.com/biinilya/memsrvd
+import:
+- package: github.com/bsm/redeo
