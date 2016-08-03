@@ -17,6 +17,15 @@
 * Make commands compatible with Redis
 * If we need persistence, scaling, auth, we should consider of using [ledigo](https://github.com/siddontang/ledisdb) with custom storage plugin
 
+## Commands implemented
+* [PING](http://redis.io/commands/ping) message
+* [GET](http://redis.io/commands/get) key
+* [SET](http://redis.io/commands/set) key value [EX seconds] [PX milliseconds] [NX|XX]
+* [DEL](http://redis.io/commands/del) key [key ...]
+* [EXPIRE](http://redis.io/commands/expire) key seconds
+
+Commands are guarantee to be compatible with redis-3.2
+
 ## Third-parties
 
 ### [Redeo](https://github.com/bsm/redeo)
