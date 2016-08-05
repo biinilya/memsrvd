@@ -87,3 +87,24 @@ func (srv *memsrv) Del(out *redeo.Responder, in *redeo.Request) error {
 	out.WriteInt(delCount)
 	return nil
 }
+
+func (srv *memsrv) Expire(out *redeo.Responder, in *redeo.Request) error {
+	switch len(in.Args) {
+	case 2:
+		var ttlSec, ttlErr = strconv.ParseUint(in.Args[1], 10, 64)
+		if ttlErr != nil {
+			out.WriteErrorString("ERR wrong format of seconds for 'get' command: " + ttlErr.Error())
+			return nil
+		}
+
+		var ok = srv.ctrl.Expire(in.Args[0], time.Duration(ttlSec)*time.Second)
+		if ok {
+			out.WriteOne()
+		} else {
+			out.WriteZero()
+		}
+	default:
+		out.WriteErrorString("ERR wrong number of arguments for 'get' command")
+	}
+	return nil
+}

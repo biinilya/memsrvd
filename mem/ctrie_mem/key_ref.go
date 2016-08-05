@@ -33,7 +33,7 @@ func toHash(h interface{}, found bool) (mem.HashMap, bool, error) {
 	if found {
 		var ref = h.(*keyRef)
 		if ref.up2date() {
-			var hash, hOk = h.(*hashMap)
+			var hash, hOk = ref.ref.(*hashMap)
 			if !hOk {
 				return nil, false, mem.ErrWrongType
 			}
@@ -47,7 +47,7 @@ func toString(h interface{}, found bool) (string, bool, error) {
 	if found {
 		var ref = h.(*keyRef)
 		if ref.up2date() {
-			var hash, hOk = h.(string)
+			var hash, hOk = ref.ref.(string)
 			if !hOk {
 				return "", false, mem.ErrWrongType
 			}

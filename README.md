@@ -19,27 +19,17 @@
 * No assumptions about consistency model, so let the server be eventually-consistent
 * No bulk operations requested, so no bulk support, just the native Redis pipeline
 
-## Progress
-* redis-cli compat
-* redis-benchmark compat (NOTE: only a few commands are implemented)
-* [TODO] Server cli options and help 
-* [TODO] Tests
-* [TODO] Benchmarks
-
 ## Commands implemented
 * [PING](http://redis.io/commands/ping) message
 * [GET](http://redis.io/commands/get) key
-* [TODO TTL][SET](http://redis.io/commands/set) key value [EX seconds] [PX milliseconds]
+* [SET](http://redis.io/commands/set) key value [EX seconds] [PX milliseconds]
   [NX|XX options are not supported]
 * [DEL](http://redis.io/commands/del) key [key ...]
-* [TODO TTL][EXPIRE](http://redis.io/commands/expire) key seconds?
+* [EXPIRE](http://redis.io/commands/expire) key seconds?
 * [HGET](http://redis.io/commands/hget) key field
 * [HSET](http://redis.io/commands/hset) key field value
 * [HDEL](http://redis.io/commands/hdel) key field [field ...]
 * [HKEYS](http://redis.io/commands/hkeys) key
-* [TODO][LPUSH](http://redis.io/commands/lpush) key value [value ...]
-* [TODO][LPOP](http://redis.io/commands/lpop) key
-* [TODO][LLEN](http://redis.io/commands/llen) key
 
 Commands are compatible with redis-3.2
 

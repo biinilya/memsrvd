@@ -51,7 +51,7 @@ type MemCtrl interface {
 	Get(key string) (string, bool, error)
 	SetEx(key string, value string, ttl time.Duration)
 	Delete(key string) bool
-	Expire(key string, ttl time.Duration)
+	Expire(key string, ttl time.Duration) bool
 
 	Hash(key string) (HashMap, error)
 	Close()

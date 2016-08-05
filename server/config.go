@@ -27,6 +27,7 @@ func (cfg *MemSrvConfig) NewMemSrv() MemSrv {
 	srv.redeoSrv.HandleFunc("set", srv.Set)
 	srv.redeoSrv.HandleFunc("get", srv.Get)
 	srv.redeoSrv.HandleFunc("del", srv.Del)
+	srv.redeoSrv.HandleFunc("expire", srv.Expire)
 
 	srv.redeoSrv.HandleFunc("hset", srv.HSet)
 	srv.redeoSrv.HandleFunc("hget", srv.HGet)
