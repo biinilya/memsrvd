@@ -142,7 +142,7 @@ BenchmarkResponder_WriteInt-4         	20000000	       103 ns/op	      33 B/op	 
 ok  	github.com/bsm/redeo	24.978s
 ```
 
-### [Ctrie](github.com/Workiva/go-datastructures)
+### [Ctrie](https://github.com/Workiva/go-datastructures)
 A concurrent, lock-free hash array mapped trie with efficient non-blocking snapshots. For lookups, Ctries have comparable performance to concurrent skip lists and concurrent hashmaps. One key advantage of Ctries is they are dynamically allocated. Memory consumption is always proportional to the number of keys in the Ctrie, while hashmaps typically have to grow and shrink. Lookups, inserts, and removes are O(logn).
 
 One interesting advantage Ctries have over traditional concurrent data structures is support for lock-free, linearizable, constant-time snapshots. Most concurrent data structures do not support snapshots, instead opting for locks or requiring a quiescent state. This allows Ctries to have O(1) iterator creation and clear operations and O(logn) size retrieval.
