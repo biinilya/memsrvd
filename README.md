@@ -30,7 +30,7 @@
 * [PING](http://redis.io/commands/ping) message
 * [GET](http://redis.io/commands/get) key
 * [TODO TTL][SET](http://redis.io/commands/set) key value [EX seconds] [PX milliseconds]
-  (NX|XX options are not supported)
+  [NX|XX options are not supported]
 * [DEL](http://redis.io/commands/del) key [key ...]
 * [TODO TTL][EXPIRE](http://redis.io/commands/expire) key seconds?
 * [HGET](http://redis.io/commands/hget) key field

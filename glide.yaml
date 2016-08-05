@@ -5,3 +5,6 @@ import:
   version: ^1.0.26
   subpackages:
   - trie/ctrie
+- package: github.com/golang/mock
+  subpackages:
+  - gomock

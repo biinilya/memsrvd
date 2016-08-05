@@ -9,77 +9,58 @@ import (
 	"github.com/biinilya/memsrvd/mem"
 )
 
-var nsGlobals = []byte("globals")
+var nsGlobals = string("globals")
 
 type ctrieMem struct {
-	hm *hashMap
+	c        *ctrie.Ctrie
 	hashLock sync.RWMutex
 }
 
 func Mem() mem.MemCtrl {
-	var m = &hashMap{}
-	m.c = ctrie.New(nil)
-	return &ctrieMem{hm: m}
+	return &ctrieMem{c: ctrie.New(nil)}
 }
 
-func (ctrl *ctrieMem) hash(key []byte) (*hashMap, error) {
+func (ctrl *ctrieMem) Hash(key string) (mem.HashMap, error) {
 	// Fastpath
 	ctrl.hashLock.RLock()
-	var h, hFound = ctrl.hm.c.Lookup(key)
+	var h, hFound, _ = toHash(ctrl.c.Lookup([]byte(key)))
 	ctrl.hashLock.RUnlock()
 	if hFound {
-		return toHash(h)
+		return h, nil
 	}
 
 	// Slowpath
 	ctrl.hashLock.Lock()
-	h, hFound = ctrl.hm.c.Lookup(key)
+	h, hFound, _ = toHash(ctrl.c.Lookup([]byte(key)))
 	if !hFound {
 		h = HashMap()
-		ctrl.hm.c.Insert(key, h)
+		ctrl.c.Insert([]byte(key), newKeyRef(h, 0))
 	}
 	ctrl.hashLock.Unlock()
-	return toHash(h)
+	return h, nil
 }
 
-func (ctrl *ctrieMem) Hash(key []byte) (mem.HashMap, error) {
-	var h, hErr = ctrl.hash(key)
-	return h, hErr
+func (ctrl *ctrieMem) Get(key string) (string, bool, error) {
+	return toString(ctrl.c.Lookup([]byte(key)))
 }
 
-func (ctrl *ctrieMem) Get(key []byte) ([]byte, bool) {
-	var globals, gErr = ctrl.hash(nsGlobals)
-	if gErr != nil {
-		return nil, false
-	}
-	var r, found = globals.Get(key)
-	return r, found
-}
-
-func (ctrl *ctrieMem) Expire(key []byte, ttl time.Duration) {
-}
-
-func (ctrl *ctrieMem) SetEx(key []byte, value []byte, ttl time.Duration) {
-	var globals, gErr = ctrl.hash(nsGlobals)
-	if gErr != nil {
+func (ctrl *ctrieMem) Expire(key string, ttl time.Duration) {
+	var ref, found = ctrl.c.Lookup([]byte(key))
+	if !found {
 		return
 	}
-	globals.SetEx(key, value, ttl)
+	ref.(*keyRef).expire(ttl)
 }
 
-func (ctrl *ctrieMem) Delete(key []byte) bool {
-	var globals, gErr = ctrl.hash(nsGlobals)
-	if gErr != nil {
-		return false
-	}
-	return globals.Delete(key)
+func (ctrl *ctrieMem) SetEx(key string, value string, ttl time.Duration) {
+	ctrl.c.Insert([]byte(key), newKeyRef(value, ttl))
 }
 
-func (ctrl *ctrieMem) Iter(key []byte) bool {
-	var globals, gErr = ctrl.hash(nsGlobals)
-	if gErr != nil {
-		return false
-	}
-	return globals.Delete(key)
+func (ctrl *ctrieMem) Delete(key string) bool {
+	var _, found = ctrl.c.Remove([]byte(key))
+	return found
 }
 
+func (ctrl *ctrieMem) Close() {
+
+}

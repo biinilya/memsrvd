@@ -1,8 +1,6 @@
 package ctrie_mem
 
 import (
-	"time"
-
 	"github.com/Workiva/go-datastructures/trie/ctrie"
 	"github.com/biinilya/memsrvd/mem"
 )
@@ -12,14 +10,14 @@ type hashMapIterator struct {
 	closer  chan struct{}
 }
 
-func (iter hashMapIterator) Next() (key []byte, value []byte, eof bool) {
+func (iter hashMapIterator) Next() (key string, value string, eof bool) {
 	var entry, opened = <-iter.entries
 	if !opened {
 		eof = true
 		return
 	}
-	key = entry.Key
-	value = entry.Value.([]byte)
+	key = string(entry.Key)
+	value = entry.Value.(string)
 	return
 }
 func (iter hashMapIterator) Close() {
@@ -51,30 +49,26 @@ func (hash *hashMap) Iter() mem.HashIterator {
 
 // Remove deletes the value for the associated key, returning true if it was
 // removed or false if the entry doesn't exist.
-func (hash *hashMap) Delete(key []byte) (found bool) {
-	_, found = hash.c.Remove(key)
+func (hash *hashMap) Delete(key string) (found bool) {
+	_, found = hash.c.Remove([]byte(key))
 	return
 }
 
 // Get returns the value for the associated key or returns false if the key
 // doesn't exist.
-func (hash *hashMap) Get(key []byte) (value []byte, found bool) {
+func (hash *hashMap) Get(key string) (value string, found bool) {
 	var entry interface{}
-	entry, found = hash.c.Lookup(key)
+	entry, found = hash.c.Lookup([]byte(key))
 	if !found {
 		return
 	}
-	value = entry.([]byte)
+	value = entry.(string)
 	return
 }
 
 // Set adds the key-value pair to the hash map, replacing the existing value if
 // the key already exists.
-func (hash *hashMap) SetEx(key []byte, value []byte, ttl time.Duration) {
-	hash.c.Insert(key, value)
-	return
-}
-
-func (hash *hashMap) Expire(key []byte, ttl time.Duration) {
+func (hash *hashMap) Set(key string, value string) {
+	hash.c.Insert([]byte(key), value)
 	return
 }

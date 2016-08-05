@@ -8,48 +8,62 @@ import (
 )
 
 func (srv *memsrv) Set(out *redeo.Responder, in *redeo.Request) error {
-	var key []byte
-	var value []byte
+	var key string
+	var value string
 	var expire time.Duration
 	switch {
-	case len(in.Args) >= 2:
-		key, value = []byte(in.Args[0]), []byte(in.Args[1])
-	case len(in.Args) >= 4 && in.Args[2] == "EX":
-		var ttlSec, ttlErr = strconv.ParseUint(in.Args[3], 10, 64)
-		if ttlErr != nil {
-			out.WriteErrorString("ERR wrong format of seconds for 'get' command: " + ttlErr.Error())
-			return nil
-		}
-		expire += time.Duration(ttlSec) * time.Second
-	case len(in.Args) >= 4 && in.Args[2] == "PX":
-		var ttlSec, ttlErr = strconv.ParseUint(in.Args[3], 10, 64)
-		if ttlErr != nil {
-			out.WriteErrorString("ERR wrong format of milliseconds for 'get' command: " + ttlErr.Error())
-			return nil
-		}
-		expire += time.Duration(ttlSec) * time.Millisecond
-	case len(in.Args) == 6 && in.Args[4] == "PX":
-		var ttlSec, ttlErr = strconv.ParseUint(in.Args[5], 10, 64)
-		if ttlErr != nil {
-			out.WriteErrorString("ERR wrong format of seconds for 'get' command: " + ttlErr.Error())
-			return nil
-		}
-		expire += time.Duration(ttlSec) * time.Second
-	default:
+	case len(in.Args)%2 == 1:
 		out.WriteErrorString("ERR wrong number of arguments for 'get' command")
+		return nil
+	case len(in.Args) > 6:
+		out.WriteErrorString("ERR wrong number of arguments for 'get' command")
+		return nil
+	case len(in.Args) == 0:
+		out.WriteErrorString("ERR wrong number of arguments for 'get' command")
+		return nil
+	default:
+		key, value = (in.Args[0]), (in.Args[1])
+		var args = in.Args[2:]
+
+		for len(args) > 0 {
+			switch args[0] {
+			case "EX":
+				var ttlSec, ttlErr = strconv.ParseUint(args[1], 10, 64)
+				if ttlErr != nil {
+					out.WriteErrorString("ERR wrong format of seconds for 'get' command: " + ttlErr.Error())
+					return nil
+				}
+				expire += time.Duration(ttlSec) * time.Second
+			case "PX":
+				var ttlSec, ttlErr = strconv.ParseUint(args[1], 10, 64)
+				if ttlErr != nil {
+					out.WriteErrorString("ERR wrong format of milliseconds for 'get' command: " + ttlErr.Error())
+					return nil
+				}
+				expire += time.Duration(ttlSec) * time.Millisecond
+			default:
+				out.WriteErrorString("ERR wrong format of arguments for 'get' command")
+				return nil
+			}
+			args = args[2:]
+		}
+		srv.ctrl.SetEx(key, value, expire)
 	}
-	srv.ctrl.SetEx(key, value, expire)
 	return nil
 }
 
 func (srv *memsrv) Get(out *redeo.Responder, in *redeo.Request) error {
 	switch len(in.Args) {
 	case 1:
-		var r, _ = srv.ctrl.Get([]byte(in.Args[0]))
-		if r == nil {
+		var r, rFound, rErr = srv.ctrl.Get((in.Args[0]))
+		if rErr != nil {
+			out.WriteErrorString(rErr.Error())
+			return nil
+		}
+		if !rFound {
 			out.WriteNil()
 		} else {
-			out.WriteBytes(r)
+			out.WriteString(r)
 		}
 	default:
 		out.WriteErrorString("ERR wrong number of arguments for 'get' command")
@@ -66,7 +80,7 @@ func (srv *memsrv) Del(out *redeo.Responder, in *redeo.Request) error {
 
 	var delCount = 0
 	for _, key := range in.Args {
-		if srv.ctrl.Delete([]byte(key)) {
+		if srv.ctrl.Delete((key)) {
 			delCount++
 		}
 	}

@@ -1,12 +1,17 @@
-hash: 25357a69bc3d809b83caa889a2a4e317878e1f4ac41157d5dbd0af3cf2be5c96
-updated: 2016-08-05T08:30:54.666110314+03:00
+hash: 6f2f39d3f5c205db9f3fbd927f6d2219b867614dcb2f6e8d12d6dee6876da0d4
+updated: 2016-08-05T14:54:26.338568959+03:00
 imports:
 - name: github.com/bsm/redeo
-  version: 6037590e89643cc05f82449bebbb49ad1f6c966a
+  version: e45fee5499efbc153edbef70da09b9d244a72e5e
   subpackages:
   - info
-- name: github.com/Workiva/go-datastructures
-  version: 6f39ffc29b39f802edbe9a0a608c996d4c177438
+- name: github.com/golang/mock
+  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
+  - gomock
+- name: github.com/Workiva/go-datastructures
+  version: ""
+  subpackages:
+  - list
   - trie/ctrie
 testImports: []
