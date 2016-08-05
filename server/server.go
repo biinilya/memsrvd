@@ -1,6 +1,9 @@
 package server
 
-import "github.com/bsm/redeo"
+import (
+	"github.com/biinilya/memsrvd/mem"
+	"github.com/bsm/redeo"
+)
 
 type MemSrv interface {
 	Run() error
@@ -8,6 +11,7 @@ type MemSrv interface {
 
 type memsrv struct {
 	redeoSrv *redeo.Server
+	ctrl     mem.MemCtrl
 }
 
 func (srv *memsrv) Run() error {

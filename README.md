@@ -16,15 +16,32 @@
 * Golang API client is any redis client
 * Make commands compatible with Redis
 * If we need persistence, scaling, auth, we should consider of using [ledigo](https://github.com/siddontang/ledisdb) with custom storage plugin
+* No assumptions about consistency model, so let the server be eventually-consistent
+* No bulk operations requested, so no bulk support, just the native Redis pipeline
+
+## Progress
+* redis-cli compat
+* redis-benchmark compat (NOTE: only a few commands are implemented)
+* [TODO] Server cli options and help 
+* [TODO] Tests
+* [TODO] Benchmarks
 
 ## Commands implemented
 * [PING](http://redis.io/commands/ping) message
 * [GET](http://redis.io/commands/get) key
-* [SET](http://redis.io/commands/set) key value [EX seconds] [PX milliseconds] [NX|XX]
+* [TODO TTL][SET](http://redis.io/commands/set) key value [EX seconds] [PX milliseconds]
+  (NX|XX options are not supported)
 * [DEL](http://redis.io/commands/del) key [key ...]
-* [EXPIRE](http://redis.io/commands/expire) key seconds
+* [TODO TTL][EXPIRE](http://redis.io/commands/expire) key seconds?
+* [HGET](http://redis.io/commands/hget) key field
+* [HSET](http://redis.io/commands/hset) key field value
+* [HDEL](http://redis.io/commands/hdel) key field [field ...]
+* [HKEYS](http://redis.io/commands/hkeys) key
+* [TODO][LPUSH](http://redis.io/commands/lpush) key value [value ...]
+* [TODO][LPOP](http://redis.io/commands/lpop) key
+* [TODO][LLEN](http://redis.io/commands/llen) key
 
-Commands are guarantee to be compatible with redis-3.2
+Commands are compatible with redis-3.2
 
 ## Third-parties
 
@@ -51,4 +68,19 @@ BenchmarkResponder_WriteStringBulks-4 	 2000000	      1002 ns/op	    1085 B/op	 
 BenchmarkResponder_WriteBulk-4        	 2000000	       817 ns/op	    1018 B/op	       5 allocs/op
 BenchmarkResponder_WriteInt-4         	20000000	       103 ns/op	      33 B/op	       1 allocs/op
 ok  	github.com/bsm/redeo	24.978s
+```
+
+### [Ctrie](github.com/Workiva/go-datastructures)
+A concurrent, lock-free hash array mapped trie with efficient non-blocking snapshots. For lookups, Ctries have comparable performance to concurrent skip lists and concurrent hashmaps. One key advantage of Ctries is they are dynamically allocated. Memory consumption is always proportional to the number of keys in the Ctrie, while hashmaps typically have to grow and shrink. Lookups, inserts, and removes are O(logn).
+
+One interesting advantage Ctries have over traditional concurrent data structures is support for lock-free, linearizable, constant-time snapshots. Most concurrent data structures do not support snapshots, instead opting for locks or requiring a quiescent state. This allows Ctries to have O(1) iterator creation and clear operations and O(logn) size retrieval.
+```
+go test github.com/Workiva/go-datastructures/trie/ctrie -bench=. -benchmem
+PASS
+BenchmarkInsert-4          	 3000000	       524 ns/op	     192 B/op	       8 allocs/op
+BenchmarkLookup-4          	10000000	       191 ns/op	      52 B/op	       2 allocs/op
+BenchmarkRemove-4          	10000000	       181 ns/op	      52 B/op	       2 allocs/op
+BenchmarkSnapshot-4        	 3000000	       420 ns/op	     176 B/op	       7 allocs/op
+BenchmarkReadOnlySnapshot-4	 5000000	       340 ns/op	     136 B/op	       5 allocs/op
+ok  	github.com/Workiva/go-datastructures/trie/ctrie	11.213s
 ```
