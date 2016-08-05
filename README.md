@@ -43,6 +43,78 @@
 
 Commands are compatible with redis-3.2
 
+## Redis-benchmark
+
+### Pipeline 1
+```
+memrvd: redis-benchmark -p 16379 -P 1 -n 100000 -r 123123 set k__rand_int__ test
+    ====== set k__rand_int__ test ======
+      100000 requests completed in 1.59 seconds
+      50 parallel clients
+      3 bytes payload
+      keep alive: 1
+    
+    98.87% <= 1 milliseconds
+    99.93% <= 2 milliseconds
+    99.98% <= 3 milliseconds
+    99.99% <= 4 milliseconds
+    100.00% <= 5 milliseconds
+    100.00% <= 6 milliseconds
+    100.00% <= 23 milliseconds
+    62932.66 requests per second
+
+redis: redis-benchmark -p 6379 -P 1 -n 100000 -r 123123 set k__rand_int__ test
+    ====== set k__rand_int__ test ======
+      100000 requests completed in 1.08 seconds
+      50 parallel clients
+      3 bytes payload
+      keep alive: 1
+    
+    99.97% <= 2 milliseconds
+    100.00% <= 2 milliseconds
+    92764.38 requests per second
+```
+
+### Pipeline 10
+```
+memrvd: redis-benchmark -p 16379 -P 10 -n 100000 -r 123123 set k__rand_int__ test
+    ====== set k__rand_int__ test ======
+     100000 requests completed in 0.66 seconds
+     50 parallel clients
+     3 bytes payload
+     keep alive: 1
+    
+    1.74% <= 1 milliseconds
+    11.15% <= 2 milliseconds
+    68.59% <= 3 milliseconds
+    90.08% <= 4 milliseconds
+    96.31% <= 5 milliseconds
+    98.42% <= 6 milliseconds
+    98.93% <= 7 milliseconds
+    99.32% <= 8 milliseconds
+    99.54% <= 9 milliseconds
+    99.58% <= 10 milliseconds
+    99.62% <= 11 milliseconds
+    99.76% <= 12 milliseconds
+    99.91% <= 13 milliseconds
+    99.94% <= 14 milliseconds
+    99.98% <= 15 milliseconds
+    100.00% <= 15 milliseconds
+    151285.92 requests per second
+   
+redis: redis-benchmark -p 6379 -P 10 -n 100000 -r 123123 set k__rand_int__ test
+    ====== set k__rand_int__ test ======
+      100000 requests completed in 0.24 seconds
+      50 parallel clients
+      3 bytes payload
+      keep alive: 1
+    
+    41.49% <= 1 milliseconds
+    99.02% <= 2 milliseconds
+    99.70% <= 3 milliseconds
+    100.00% <= 3 milliseconds
+    416666.69 requests per second
+```
 ## Third-parties
 
 ### [Redeo](https://github.com/bsm/redeo)
