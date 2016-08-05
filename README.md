@@ -47,7 +47,7 @@ Commands are compatible with redis-3.2
 
 ### Pipeline 1
 ```
-memrvd: redis-benchmark -p 16379 -P 1 -n 100000 -r 123123 set k__rand_int__ test
+memsrvd: redis-benchmark -p 16379 -P 1 -n 100000 -r 123123 set k__rand_int__ test
     ====== set k__rand_int__ test ======
       100000 requests completed in 1.59 seconds
       50 parallel clients
@@ -77,7 +77,7 @@ redis: redis-benchmark -p 6379 -P 1 -n 100000 -r 123123 set k__rand_int__ test
 
 ### Pipeline 10
 ```
-memrvd: redis-benchmark -p 16379 -P 10 -n 100000 -r 123123 set k__rand_int__ test
+memsrvd: redis-benchmark -p 16379 -P 10 -n 100000 -r 123123 set k__rand_int__ test
     ====== set k__rand_int__ test ======
      100000 requests completed in 0.66 seconds
      50 parallel clients
