@@ -355,8 +355,10 @@ func (_mr *_MockMemCtrlRecorder) Delete(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Delete", arg0)
 }
 
-func (_m *MockMemCtrl) Expire(key string, ttl time.Duration) {
-	_m.ctrl.Call(_m, "Expire", key, ttl)
+func (_m *MockMemCtrl) Expire(key string, ttl time.Duration) bool {
+	ret := _m.ctrl.Call(_m, "Expire", key, ttl)
+	ret0, _ := ret[0].(bool)
+	return ret0
 }
 
 func (_mr *_MockMemCtrlRecorder) Expire(arg0, arg1 interface{}) *gomock.Call {
